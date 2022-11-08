@@ -29,7 +29,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run(){
     try{
         const blogColloection = client.db('serviceDB').collection('blogs');
-        const serviceCollection = client.db('serviceDB').collection('services')
+        const serviceCollection = client.db('serviceDB').collection('services');
 
         app.get('/blogs',async(req,res)=>{
             const query={}
@@ -52,11 +52,9 @@ async function run(){
             const service = await serviceCollection.findOne(query);
             res.send(service)
         }
-
-
-
     
     }
+
     finally{
 
     }
