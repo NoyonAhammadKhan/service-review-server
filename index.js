@@ -38,6 +38,13 @@ async function run(){
             res.send(blogs)
         })
 
+        app.get('/services',async(req,res)=>{
+            const query={}
+            const cursor = serviceCollection.find({})
+            const services = await cursor.toArray();
+            res.send(services)
+        })
+
 
     
     }
