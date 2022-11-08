@@ -24,31 +24,12 @@ app.get('/',(req,res)=>{
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.4hum0hz.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
-function verifyJWT(req,res,next){
-    const authHeader = req.headers.authorization;
-
-    if(!authHeader){
-        return res.status(401).send({'message':'unothorized access'})
-    }
-    const token=authHeader.split(' ')[1];
-
-    jwt.verify(token,process.env.ACCESS_TOKEN_SECRET,function(err, decoded){
-        if(err){
-            res.status(403).send({'message':'unauthorized access'})
-        }
-        req.decoded = decoded;
-        next();
-    })
-    
-}
-
 
 
 async function run(){
     try{
         const blogColloection = client.db('serviceDB').collection('blogs');
         const serviceCollection = client.db('serviceDB').collection('services')
-
 
         app.get('/blogs',async(req,res)=>{
             const query={}
@@ -57,20 +38,8 @@ async function run(){
             res.send(blogs)
         })
 
-        app.get('/services',async(req,res)=>{
-            const query={}
-            const cursor = serviceCollection.find({})
-            const services = await cursor.toArray();
-            res.send(services)
-        })
 
-        app.get('/services/:id',async(req,res)=>{
-            const id = req.params.id;
-            console.log(id)
-            const query={_id:ObjectId(id)}
-            const service = await serviceCollection.findOne(query);
-            res.send(service)
-        })
+    
     }
     finally{
 
