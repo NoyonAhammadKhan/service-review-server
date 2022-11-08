@@ -25,6 +25,25 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@clu
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 
+function verifyJWT(req,res,next){
+    const authHeader = req.headers.authorization;
+
+    if(!authHeader){
+        return res.status(401).send({'message':'unothorized access'})
+    }
+    const token=authHeader.split(' ')[1];
+
+    jwt.verify(token,process.env.ACCESS_TOKEN_SECRET,function(err, decoded){
+        if(err){
+            res.status(403).send({'message':'unauthorized access'})
+        }
+        req.decoded = decoded;
+        next();
+    })
+    
+}
+
+
 
 async function run(){
     try{
@@ -40,18 +59,27 @@ async function run(){
 
         app.get('/services',async(req,res)=>{
             const query={}
-            const cursor = serviceCollection.find({})
-            const services = await cursor.toArray();
-            res.send(services)
+            const cursor = serviceCollection.find({});
+            console.log(req.query)
+            if(req.query.dataAmount){
+                let services = await cursor.limit(parseInt(req.query.dataAmount)).toArray();
+                return res.send(services)
+            }else{
+                let services = await cursor.toArray();
+                return res.send(services)
+            }
+            
+          
         })
 
         app.get('/services/:id',async(req,res)=>{
             const id = req.params.id;
+
             console.log(id)
             const query={_id:ObjectId(id)}
             const service = await serviceCollection.findOne(query);
             res.send(service)
-        }
+        })
     
     }
 
