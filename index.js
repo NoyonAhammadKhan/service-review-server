@@ -100,10 +100,29 @@ async function run(){
             res.send(result);
         })
 
-        // app.patch('reviews/:id',async(req,res)=>{
-        //     const id = req.params.id;
-        //     const result=
-        // })
+        
+        app.patch('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            // const status = req.body.status;
+            const reviewerName = req.body.reviewerName;
+            const reviewDetails = req.body.reviewDetails;
+            const reviewerPicture = req.body.reviewerPicture;
+            const serviceId = req.body.serviceId;
+            const userEmail = req.body.userEmail;
+            const query = { _id: ObjectId(id) }
+            const updatedDoc = {
+                $set:{
+                    reviewerName:reviewerName,
+                    reviewDetails:reviewDetails,
+                    reviewerPicture:reviewerPicture,
+                    serviceId:serviceId,
+                    userEmail:userEmail
+                }
+            }
+            const result = await orderCollection.updateOne(query, updatedDoc);
+            res.send(result);
+        })
+
         app.delete('/reviews/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
