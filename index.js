@@ -99,7 +99,18 @@ async function run(){
             const result = await serviceCollection.insertOne(review);
             res.send(result);
         })
-    
+
+        // app.patch('reviews/:id',async(req,res)=>{
+        //     const id = req.params.id;
+        //     const result=
+        // })
+        app.delete('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await orderCollection.deleteOne(query);
+            res.send(result);
+        })
+
     }
 
     finally{
