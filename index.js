@@ -93,6 +93,12 @@ async function run(){
             const reviews =await cursor.toArray();
             res.send(reviews);
         })
+
+        app.post('/reviews/:serviceId',async(req,res)=>{
+            const review = req.body;
+            const result = await serviceCollection.insertOne(review);
+            res.send(result);
+        })
     
     }
 
