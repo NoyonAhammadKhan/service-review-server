@@ -49,7 +49,7 @@ async function run(){
     try{
         const blogColloection = client.db('serviceDB').collection('blogs');
         const serviceCollection = client.db('serviceDB').collection('services');
-
+        const reviewCollection = client.db('serviceDB').collection('reviews')
         app.get('/blogs',async(req,res)=>{
             const query={}
             const cursor = blogColloection.find(query);
@@ -68,8 +68,6 @@ async function run(){
                 let services = await cursor.toArray();
                 return res.send(services)
             }
-            
-          
         })
 
         app.get('/services/:id',async(req,res)=>{
@@ -79,6 +77,15 @@ async function run(){
             const query={_id:ObjectId(id)}
             const service = await serviceCollection.findOne(query);
             res.send(service)
+        })
+
+        app.get('/reviews/:serviceId',async(req,res)=>{
+            const sid = (req.params.serviceId);
+            console.log(sid);
+            const query = {serviceId:sid}
+            const cursor =  reviewCollection.find(query);
+            const reviews =await cursor.toArray();
+            res.send(reviews);
         })
     
     }
